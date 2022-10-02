@@ -3,10 +3,35 @@ const countyURL = "https://cdn.freecodecamp.org/testable-projects-fcc/data/choro
 
 let svg = d3.select("svg");
 
-const drawMap = (countryData) => {
+const drawMap = (countryData, educationData) => {
   //d attribute in svg - the instructions to draw the path
   //then call d3.geoPath() to generates path instructions from the data
-  svg.selectAll("path").data(countryData).enter().append("path").attr("d", d3.geoPath()).attr("class", "county");
+  svg
+    .selectAll("path")
+    .data(countryData)
+    .enter()
+    .append("path")
+    .attr("d", d3.geoPath())
+    .attr("class", "county")
+    .attr("fill", (countyData) => {
+      let id = countyData.id;
+      //find fips code in education data which match with the geoJSON
+      let county = educationData.find((item) => {
+        return item.fips === id;
+      });
+      //access to the percentage of the matched county
+      let percentage = county.bachelorsOrHigher;
+      //set different percentage with difference color fill
+      if (percentage <= 15) {
+        return "#d4fadb";
+      } else if (percentage <= 30) {
+        return "#8dd99a";
+      } else if (percentage <= 45) {
+        return "#3f914c";
+      } else {
+        return "#0d4d18";
+      }
+    });
 };
 
 //fetch country url first, then call function to fetch the education data
@@ -18,15 +43,13 @@ async function fetchMap() {
   //only the data > objects > counties will be use in this project, only convert this part
   //the geometry field of each object has an array of coordinates from which we can draw lines to draw a map outline of that county
   //and after converted as geoJSON, we only need features parts, so extrait it only
-  const geojson = topojson.feature(countryData, countryData.objects.counties).features;
-  drawMap(geojson);
-  fetchEducation();
-}
+  const geoJSON = topojson.feature(countryData, countryData.objects.counties).features;
 
-async function fetchEducation() {
+  //fetch education data after fetched the county data
   const educationResponse = await fetch(educationURL);
   const educationData = await educationResponse.json();
-  console.log(educationData);
+
+  drawMap(geoJSON, educationData);
 }
 
 fetchMap();
