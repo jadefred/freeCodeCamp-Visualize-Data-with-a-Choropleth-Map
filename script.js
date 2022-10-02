@@ -3,7 +3,11 @@ const countyURL = "https://cdn.freecodecamp.org/testable-projects-fcc/data/choro
 
 let svg = d3.select("svg");
 
-const drawMap = () => {};
+const drawMap = (countryData) => {
+  //d attribute in svg - the instructions to draw the path
+  //then call d3.geoPath() to generates path instructions from the data
+  svg.selectAll("path").data(countryData).enter().append("path").attr("d", d3.geoPath()).attr("class", "county");
+};
 
 //fetch country url first, then call function to fetch the education data
 async function fetchMap() {
@@ -15,7 +19,7 @@ async function fetchMap() {
   //the geometry field of each object has an array of coordinates from which we can draw lines to draw a map outline of that county
   //and after converted as geoJSON, we only need features parts, so extrait it only
   const geojson = topojson.feature(countryData, countryData.objects.counties).features;
-
+  drawMap(geojson);
   fetchEducation();
 }
 

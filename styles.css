@@ -3,5 +3,7 @@ main {
 }
 
 #canvas {
-  background-color: beige;
+  background-color: ghostwhite;
+  min-height: 600px;
+  min-width: 950px;
 }
