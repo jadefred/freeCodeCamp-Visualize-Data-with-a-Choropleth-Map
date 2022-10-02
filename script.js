@@ -1,7 +1,8 @@
 const educationURL = "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json";
 const countyURL = "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json";
 
-let svg = d3.select("svg");
+const svg = d3.select("svg");
+const tooltip = d3.select("#tooltip");
 
 const drawMap = (countryData, educationData) => {
   //d attribute in svg - the instructions to draw the path
@@ -41,6 +42,22 @@ const drawMap = (countryData, educationData) => {
         return item.fips === id;
       });
       return county.bachelorsOrHigher;
+    })
+    .on("mouseover", (countyData) => {
+      tooltip.transition().style("visibility", "visible");
+
+      let id = countyData.id;
+      let county = educationData.find((item) => {
+        return item.fips === id;
+      });
+      tooltip.html(
+        county.fips + " - " + county.area_name + ", " + county.state + "<br/>" + "Percentage : " + county.bachelorsOrHigher + "%"
+      );
+
+      tooltip.attr("data-education", county.bachelorsOrHigher);
+    })
+    .on("mouseout", () => {
+      tooltip.transition().style("visibility", "hidden");
     });
 };
 

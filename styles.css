@@ -7,3 +7,9 @@ main {
   min-height: 600px;
   min-width: 950px;
 }
+
+#tooltip{
+    visibility: hidden;
+    height: auto;
+    width: auto;
+}
