@@ -31,6 +31,16 @@ const drawMap = (countryData, educationData) => {
       } else {
         return "#0d4d18";
       }
+    })
+    .attr("data-fips", (countyData) => {
+      return countyData.id;
+    })
+    .attr("data-education", (countyData) => {
+      let id = countyData.id;
+      let county = educationData.find((item) => {
+        return item.fips === id;
+      });
+      return county.bachelorsOrHigher;
     });
 };
 
